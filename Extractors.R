@@ -25,12 +25,19 @@ DateExtractor <- function(strDateTime, ..., tz=Sys.timezone()){
   
   # finally, try dstat default format
   #
-  posixDate <- DstatDateExtractor(strDateTime, tz=tz)
-  if (posixDate != -1){
-    return(posixDate)
-  } 
-  #warning(paste("Date conversion failed on:", strDateTime))
-  return(-1)
+  posixDate <- tryCatch( { 
+    DstatDateExtractor(strDateTime, tz=tz) },
+    warning = function(war) {
+      warning(paste("Date conversion failed on:", strDateTime))
+      return(-1)
+    },
+    error = function(err) {
+      warning(paste("FATAL Date conversion failed on:", strDateTime))
+      return(-1)
+    }
+  )
+  
+  return(posixDate)
 }
   
 
@@ -52,10 +59,7 @@ DstatDateExtractor <- function(strDateTime, tz=Sys.timezone()){
   date     <- paste(year, month, day, sep="-")
   
   strDateTime <- paste(date, time)
-  posixDate   <- tryCatch( { ymd_hms(strDateTime, tz=tz) },
-                           warning = function(war) { assign("last.warning", NULL, envir = baseenv()); return(-1) },
-                           error   = function(err) { return(-1) } )
-  return(posixDate)
+  return(ymd_hms(strDateTime, tz=tz))
 }
 
 #' Transform an experiment fullExperiment into an experiment name
@@ -71,3 +75,5 @@ ExperimentExtractor <- function(fullExperiment) {
   
   return(experiment)
 } 
+
+

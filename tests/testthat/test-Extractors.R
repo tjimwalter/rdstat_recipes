@@ -10,7 +10,7 @@ context("DateExtractor")
 # Helper function that prints intermediate feedback when fdebug==TRUE
 #
 dprint <- function(str_to_print){
-  fdebug <- FALSE
+  fdebug <- TRUE
   if (fdebug) { print(str_to_print) }
 }
 
@@ -110,7 +110,7 @@ test_that("6. DateExtractor fails with illegal day in dstat", {
   
   dprint(paste("posix date:",                posix_date, 
                "as ILLEGAL dstat   format:", str_date, 
-               "     returns as posix:",     DateExtractor(str_date)))
+               "     returns as ERROR:",     DateExtractor(str_date)))
   
   expect_equal(-1, DateExtractor(str_date))
 })
