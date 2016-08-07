@@ -58,14 +58,14 @@ DstatDateExtractor <- function(strDateTime, tz=Sys.timezone()){
   return(posixDate)
 }
 
-#' Transform an experiment filename into an experiment name
+#' Transform an experiment fullExperiment into an experiment name
 #' 
 #' Takes a fully qualified path and returns a shorter - but still unique - experiment name
-#' @param filename The orginal path that was read, which might include directories.
+#' @param fullExperiment The orginal path that was read, which might include directories.
 #' @return A character vector of experiment
 ###################################################################################################
-ExperimentExtractor <- function(filename) {
-  experiment <- basename(filename)
+ExperimentExtractor <- function(fullExperiment) {
+  experiment <- basename(fullExperiment)
   experiment <- gsub("_",    "-", experiment)
   experiment <-  sub(".csv", "",  experiment)
   

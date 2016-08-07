@@ -10,23 +10,6 @@ IsDstatFile <- function(filename){
   }
 }
 
-#' Transforms a filepath string to reliably formatted experiment
-#' 
-#' This is a UDF called from ReadExperiments. It is set using SetRdstatEnv(). ExperimentCleaner 
-#' is called prior to the FactorExtractor, which depends upon reliable formatting. 
-#' Takes a fully qualified path and returns a shorter - but still unique - experiment name
-#' @param path The orginal path that was read, which might include directories.
-#' @return A character vector of experiment
-###################################################################################################
-ExperimentCleaner <- function(experiment) {
-  experiment <- basename(unlist(experiment))
-  experiment <- gsub("_",    "-", experiment)
-  experiment <-  sub(".csv", "",  experiment)
-  
-  return(experiment)
-} 
-
-
 #' Read dstat file and return a dataframe
 #'
 #' Reads a CSV-formatted dstat file and returns a dataframe
@@ -59,9 +42,11 @@ ReadExperiment <-function(filename, skip=6) {
   mdf$send <- mdf$send
   mdf$recv <- mdf$recv
   
-  mdf$time       <- DateCleaner(as.character(mdf[, grepl("time", names(mdf))]))
-  mdf            <- cbind(mdf, ExtractFactors(mdf$experiment))
-  mdf$experiment <- ExperimentCleaner(mdf$experiment)
+  mdf$time       <- DateExtractor(as.character(mdf[, grepl("time", names(mdf))]))
+  #mdf            <- cbind(mdf, ExtractFactors(mdf$experiment))
+  mdf$experiment <- ExperimentExtractor(mdf$experiment)
 
   return(mdf)
 }
+
+mdf <- ReadExperiment("~/studies/compare_test_control/input/synload_ctrl_rep1.csv")

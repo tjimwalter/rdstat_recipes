@@ -1,7 +1,10 @@
 #library(lubridate)
 #library(testthat)
 source("~/dev/rdstat_recipes/Extractors.R")
-context("Date extraction")
+
+###############################################################################
+###############################################################################
+context("DateExtractor")
 
 #
 # Helper function that prints intermediate feedback when fdebug==TRUE
@@ -112,3 +115,25 @@ test_that("6. DateExtractor fails with illegal day in dstat", {
   expect_equal(-1, DateExtractor(str_date))
 })
 
+###############################################################################
+###############################################################################
+context("ExperimentExtractor")
+
+
+test_that("ExperimentExtractor removes .csv suffix", {
+  skip_on_os("windows")
+  start_name <- "experimentname.csv"
+  end_name   <- "experimentname"  
+  
+  expect_true(identical(end_name, ExperimentExtractor(start_name)))
+})
+
+
+test_that("ExperimentExtractor removes Windows path prefix", {
+  skip_on_os("mac")
+  skip_on_os("linux")
+  start_name <- "c:\\experimentname.csv"
+  end_name   <- "experimentname"  
+  print(ExperimentExtractor(start_name))
+  expect_true(identical(end_name, ExperimentExtractor(start_name)))
+})
